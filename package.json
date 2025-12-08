@@ -6,7 +6,8 @@
     "build": "next build",
     "dev": "next dev --turbo",
     "start": "next start",
-    "postinstall": "fumadocs-mdx"
+    "postinstall": "fumadocs-mdx",
+    "sync:docs": "bash ./scripts/sync-general-content.sh"
   },
   "dependencies": {
     "@icons-pack/react-simple-icons": "^13.8.0",
