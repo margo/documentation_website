@@ -1,8 +1,0 @@
-{
-  "title": "Workload Fleet Managers",
-  "pages": [
-    "device-capability-reporting",
-    "workload-deployment",
-    "consuming-workload-observability-data"
-  ]
-}

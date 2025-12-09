@@ -13,8 +13,7 @@ else
   git clone --depth 1 "$REPO_URL" "$CACHE_DIR"
 fi
 
-for dir in concepts overview personas-definitions how-to-contribute; do
-  mkdir -p "$ROOT_DIR/content/docs/$dir"
-  rsync -a --delete "$CACHE_DIR/$dir/" "$ROOT_DIR/content/docs/$dir/"
-done
+mkdir -p "$ROOT_DIR/content/docs"
+rsync -a --delete --exclude ".git" "$CACHE_DIR/" "$ROOT_DIR/content/docs/"
+
 

@@ -27,3 +27,6 @@ yarn-error.log*
 .env*.local
 .vercel
 next-env.d.ts
+
+#content as it comes from the general_website_content repository
+content/docs/

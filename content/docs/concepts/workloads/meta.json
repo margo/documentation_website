@@ -1,9 +1,0 @@
-{
-  "title": "Workloads",
-  "pages": [
-    "application-package-definition",
-    "workload-orch-to-app-reg-interaction",
-    "publishing-workload-observability-data",
-    "local-registries"
-  ]
-}
