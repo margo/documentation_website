@@ -16,11 +16,13 @@ export function baseOptions(): BaseLayoutProps {
             src="/figures/margo-logo.png"
             alt="Margo Logo"
             className="w-24 dark:hidden"
+            suppressHydrationWarning
           />
           <img
             src="/figures/margo_white.png"
             alt="Margo Logo"
             className="hidden w-24 dark:block"
+            suppressHydrationWarning
           />
         </span>
       ),
