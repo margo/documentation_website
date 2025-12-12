@@ -36,7 +36,7 @@
     --color-fd-card: hsl(0, 0%, 8%);
     --color-fd-card-foreground: hsl(0, 0%, 98%);
     --color-fd-border: hsla(0, 0%, 50%, 30%);
-    --color-fd-primary: hsl(218, 99%, 58%);
+    --color-fd-primary: hsl(218, 100%, 47%);
     --color-fd-primary-foreground: hsl(0, 0%, 9%);
     --color-fd-secondary: hsl(0, 0%, 14.9%);
     --color-fd-secondary-foreground: hsl(0, 0%, 98%);
@@ -52,6 +52,10 @@
 
 body {
     font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--color-fd-primary);
 }
 
 .bg-grid-pattern {
