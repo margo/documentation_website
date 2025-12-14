@@ -26,8 +26,8 @@ export const metadata: Metadata = {
   authors: [{ name: "Margo Initiative" }],
   creator: "Margo Initiative",
   icons: {
-    icon: "/assets/icon.svg",
-    apple: "/assets/icon.svg",
+    icon: "https://docs.margo.org/assets/icon.svg",
+    apple: "https://docs.margo.org/assets/icon.svg",
   },
   openGraph: {
     type: "website",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
       "Margo enables open, interoperable orchestration of edge applications and devices at scale—unlocking innovation and accelerating digital transformation.",
     images: [
       {
-        url: "/assets/og-image.png",
+        url: "https://docs.margo.org/assets/og-image.png",
         width: 1200,
         height: 630,
         alt: "Margo Documentation",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     title: "Margo Documentation",
     description:
       "Margo enables open, interoperable orchestration of edge applications and devices at scale—unlocking innovation and accelerating digital transformation.",
-    images: ["/assets/og-image.png"],
+    images: ["https://docs.margo.org/assets/og-image.png"],
   },
   robots: {
     index: true,
