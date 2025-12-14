@@ -9,6 +9,7 @@ import { SiYoutube, SiDiscourse } from "@icons-pack/react-simple-icons";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://docs.margo.org'),
   title: {
     default: "Margo Documentation",
     template: "%s | Margo Documentation",
@@ -26,8 +27,8 @@ export const metadata: Metadata = {
   authors: [{ name: "Margo Initiative" }],
   creator: "Margo Initiative",
   icons: {
-    icon: "https://docs.margo.org/assets/icon.svg",
-    apple: "https://docs.margo.org/assets/icon.svg",
+    icon: "/assets/icon.svg",
+    apple: "/assets/icon.svg",
   },
   openGraph: {
     type: "website",
