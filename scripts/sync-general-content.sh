@@ -2,34 +2,38 @@
 set -euo pipefail
 
 REPO_URL="https://github.com/margo/general_website_content.git"
+REPO_BRANCH="clean-files"
 SPEC_REPO_URL="https://github.com/margo/specification.git"
 SPEC_BRANCH="pre-draft"
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 CACHE_DIR="$ROOT_DIR/.cache/general_website_content"
 SPEC_CACHE_DIR="$ROOT_DIR/.cache/specification"
 
-if [ -d "$CACHE_DIR/.git" ]; then
-  git -C "$CACHE_DIR" fetch --depth 1 origin main
-  git -C "$CACHE_DIR" reset --hard origin/main
-else
-  rm -rf "$CACHE_DIR"
-  git clone --depth 1 "$REPO_URL" "$CACHE_DIR"
-fi
+rm -rf "$CACHE_DIR"
+git clone --depth 1 --branch "$REPO_BRANCH" "$REPO_URL" "$CACHE_DIR"
 
 mkdir -p "$ROOT_DIR/content/docs"
-rsync -a --delete --exclude ".git" "$CACHE_DIR/" "$ROOT_DIR/content/docs/"
+rsync -a --delete --exclude ".git" "$CACHE_DIR/system-design/" "$ROOT_DIR/content/docs/"
 
-if [ -d "$SPEC_CACHE_DIR/.git" ]; then
-  git -C "$SPEC_CACHE_DIR" fetch --depth 1 origin "$SPEC_BRANCH"
-  git -C "$SPEC_CACHE_DIR" reset --hard "origin/$SPEC_BRANCH"
-else
-  rm -rf "$SPEC_CACHE_DIR"
-  git clone --depth 1 --branch "$SPEC_BRANCH" "$SPEC_REPO_URL" "$SPEC_CACHE_DIR"
+rm -rf "$SPEC_CACHE_DIR"
+git clone --depth 1 --branch "$SPEC_BRANCH" "$SPEC_REPO_URL" "$SPEC_CACHE_DIR"
+
+mkdir -p "$ROOT_DIR/content/docs/specification"
+rsync -a --delete --exclude ".git" "$SPEC_CACHE_DIR/system-design/specification/" "$ROOT_DIR/content/docs/specification/"
+echo '{"title": "API Reference"}' > "$ROOT_DIR/content/docs/specification/meta.json"
+
+# Move figures folders from repos to public/figures
+mkdir -p "$ROOT_DIR/public/figures"
+if [ -d "$CACHE_DIR/system-design/figures" ]; then
+  rsync -a "$CACHE_DIR/system-design/figures/" "$ROOT_DIR/public/figures/"
+fi
+if [ -d "$SPEC_CACHE_DIR/system-design/specification/figures" ]; then
+  rsync -a "$SPEC_CACHE_DIR/system-design/specification/figures/" "$ROOT_DIR/public/figures/"
 fi
 
-mkdir -p "$ROOT_DIR/content/docs/api-reference"
-rsync -a --delete --exclude ".git" "$SPEC_CACHE_DIR/system-design/specification/" "$ROOT_DIR/content/docs/api-reference/"
-echo '{"title": "API Reference"}' > "$ROOT_DIR/content/docs/api-reference/meta.json"
+# Remove figures folders from docs directory
+rm -rf "$ROOT_DIR/content/docs/figures"
+rm -rf "$ROOT_DIR/content/docs/specification/figures"
 
 # Fix invalid 'https' language in code blocks
 if [[ "$OSTYPE" == "darwin"* ]]; then
