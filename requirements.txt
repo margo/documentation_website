@@ -1,5 +1,5 @@
 mkdocs
 mkdocs-markdownextradata-plugin
 mkdocs-material
-linkml
+linkml>=1.8.5
 
