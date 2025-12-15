@@ -18,6 +18,61 @@ rsync -a --delete --exclude ".git" "$CACHE_DIR/system-design/" "$ROOT_DIR/conten
 rm -rf "$SPEC_CACHE_DIR"
 git clone --depth 1 --branch "$SPEC_BRANCH" "$SPEC_REPO_URL" "$SPEC_CACHE_DIR"
 
+# Generate LinkML documentation
+echo "Generating LinkML documentation..."
+cd "$SPEC_CACHE_DIR"
+
+LINKML_ROOT_DIR="$SPEC_CACHE_DIR"
+LINKML_THIS_DIR="$LINKML_ROOT_DIR/doc-generation"
+CONFIGS="${LINKML_THIS_DIR}/configurations"
+
+if command -v poetry 2>&1 >/dev/null ; then
+    RUN="poetry run"
+else
+    if ! command -v linkml 2>&1 >/dev/null ; then
+        echo "Warning: The command 'linkml' is missing, skipping LinkML generation"
+        RUN=""
+    elif ! command -v mkdocs 2>&1 >/dev/null ; then
+        echo "Warning: The command 'mkdocs' is missing, skipping LinkML generation"
+        RUN=""
+    else
+        RUN=""
+    fi
+fi
+
+gen_spec () {
+    ITEM_REL_PATH=$(jq -r '.root' "${CONFIGS}/$1")
+    SCHEMA_FILE=$(jq -r '.schemafile' "${CONFIGS}/$1")
+    MKDOWN_FILE=$(jq -r '.markdowndoc' "${CONFIGS}/$1")
+    SRC_ROOT="${LINKML_ROOT_DIR}/${ITEM_REL_PATH}"
+    SPEC_ROOT="${LINKML_ROOT_DIR}/system-design${ITEM_REL_PATH#src}"
+    echo "${SRC_ROOT}"
+
+    ${RUN} linkml generate doc \
+        --directory="${SRC_ROOT}/docs" \
+        --template-directory="${SRC_ROOT}/resources" \
+        "${SRC_ROOT}/${SCHEMA_FILE}"
+
+    mv "${SRC_ROOT}/docs/index.md" "${SPEC_ROOT}/${MKDOWN_FILE}"
+    rm -r "${SRC_ROOT}/docs"
+}
+
+if [ -n "$RUN" ] || command -v linkml 2>&1 >/dev/null ; then
+    if [ -d "$CONFIGS" ]; then
+        for spec in $(ls "${CONFIGS}") ; do
+            gen_spec "${spec}"
+        done
+        
+        ${RUN} mkdocs build
+    else
+        echo "Warning: configurations directory not found at $CONFIGS"
+    fi
+else
+    echo "Skipping LinkML documentation generation (missing dependencies)"
+fi
+
+cd "$ROOT_DIR"
+
 mkdir -p "$ROOT_DIR/content/docs/specification"
 rsync -a --delete --exclude ".git" "$SPEC_CACHE_DIR/system-design/specification/" "$ROOT_DIR/content/docs/specification/"
 # echo '{"title": "API Reference"}' > "$ROOT_DIR/content/docs/specification/meta.json"
@@ -38,8 +93,10 @@ rm -rf "$ROOT_DIR/content/docs/specification/figures"
 # Fix invalid 'https' language in code blocks
 if [[ "$OSTYPE" == "darwin"* ]]; then
   find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i '' 's/^```https/```text/g' {} +
+  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i '' 's/<br>//g' {} +
 else
   find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i 's/^```https/```text/g' {} +
+  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i 's/<br>//g' {} +
 fi
 
 # Process extracted markdown files to add title to frontmatter and remove it from content
