@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO_URL="https://github.com/margo/general_website_content.git"
-REPO_BRANCH="clean-files"
+REPO_BRANCH="pre-draft"
 SPEC_REPO_URL="https://github.com/margo/specification.git"
 SPEC_BRANCH="pre-draft"
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
@@ -20,7 +20,7 @@ git clone --depth 1 --branch "$SPEC_BRANCH" "$SPEC_REPO_URL" "$SPEC_CACHE_DIR"
 
 mkdir -p "$ROOT_DIR/content/docs/specification"
 rsync -a --delete --exclude ".git" "$SPEC_CACHE_DIR/system-design/specification/" "$ROOT_DIR/content/docs/specification/"
-echo '{"title": "API Reference"}' > "$ROOT_DIR/content/docs/specification/meta.json"
+# echo '{"title": "API Reference"}' > "$ROOT_DIR/content/docs/specification/meta.json"
 
 # Move figures folders from repos to public/figures
 mkdir -p "$ROOT_DIR/public/figures"
