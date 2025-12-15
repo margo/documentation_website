@@ -1,5 +1,5 @@
 [build]
-  command = "python3 -m pip install -r requirements.txt && npm run build"
+  command = "python3 -m pip install --user -r requirements.txt && export PATH=\"$HOME/.local/bin:$PATH\" && npm run build"
   publish = ".next"
   functions = ".netlify/functions"
 
