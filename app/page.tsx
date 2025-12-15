@@ -47,7 +47,7 @@ export default function HomePage() {
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
-                href="/margo-api-reference"
+                href="/specification/applications/application-registry"
                 className="group inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-fd-border bg-fd-background px-6 py-3.5 text-base font-semibold text-fd-foreground transition-all hover:border-fd-primary/50 hover:bg-fd-muted sm:w-auto"
               >
                 <FileText className="h-5 w-5" />
