@@ -94,6 +94,14 @@ rm -rf "$ROOT_DIR/content/docs/specification/figures"
 # Process extracted markdown files to add title to frontmatter and remove it from content
 echo "Processing markdown titles..."
 find "$ROOT_DIR/content/docs" -type f -name "*.md" | while read -r file; do
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' 's/^```https/```text/g' "$file"
+    sed -i '' 's/<br>//g' "$file"
+  else
+    sed -i 's/^```https/```text/g' "$file"
+    sed -i 's/<br>//g' "$file"
+  fi
+
   # Extract first H1 (lines starting with '# ')
   h1_line=$(grep -m 1 "^# " "$file" || true)
 
@@ -148,12 +156,3 @@ find "$ROOT_DIR/content/docs" -type f -name "*.md" | while read -r file; do
     fi
   fi
 done
-
-# Fix invalid 'https' language in code blocks
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i '' 's/^```https/```text/g' {} +
-  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i '' 's/<br>//g' {} +
-else
-  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i 's/^```https/```text/g' {} +
-  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i 's/<br>//g' {} +
-fi
