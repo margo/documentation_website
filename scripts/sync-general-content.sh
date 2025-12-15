@@ -90,14 +90,6 @@ fi
 rm -rf "$ROOT_DIR/content/docs/figures"
 rm -rf "$ROOT_DIR/content/docs/specification/figures"
 
-# Fix invalid 'https' language in code blocks
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i '' 's/^```https/```text/g' {} +
-  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i '' 's/<br>//g' {} +
-else
-  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i 's/^```https/```text/g' {} +
-  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i 's/<br>//g' {} +
-fi
 
 # Process extracted markdown files to add title to frontmatter and remove it from content
 echo "Processing markdown titles..."
@@ -156,3 +148,12 @@ find "$ROOT_DIR/content/docs" -type f -name "*.md" | while read -r file; do
     fi
   fi
 done
+
+# Fix invalid 'https' language in code blocks
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i '' 's/^```https/```text/g' {} +
+  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i '' 's/<br>//g' {} +
+else
+  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i 's/^```https/```text/g' {} +
+  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i 's/<br>//g' {} +
+fi
