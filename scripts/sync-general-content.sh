@@ -97,6 +97,27 @@ else
   find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i 's/<br>//g' {} +
 fi
 
+echo "Generating SwaggerUI MDX files..."
+rm -f "$ROOT_DIR/content/docs/specification/margo-management-interface/management-interface-swagger.md"
+find "$ROOT_DIR/content/docs" -type f \( -name "workload-management-api-1.0.0.yaml" -o -name "workload-management-api-1.0.0.yml" \) -print0 | while IFS= read -r -d '' yaml; do
+  mdx="${yaml%.*}.mdx"
+  base="$(basename "$yaml")"
+  cat > "$mdx" <<EOF
+---
+title: "Management Interface - Swagger UI"
+---
+<SwaggerUI url="./$base" />
+EOF
+done
+
+echo "Copying OpenAPI specs to public..."
+find "$ROOT_DIR/content/docs" -type f \( -name "*.yaml" -o -name "*.yml" \) -print0 | while IFS= read -r -d '' yaml; do
+  rel="${yaml#"$ROOT_DIR/content/docs/"}"
+  dest_dir="$ROOT_DIR/public/$(dirname "$rel")"
+  mkdir -p "$dest_dir"
+  cp "$yaml" "$dest_dir/$(basename "$yaml")"
+done
+
 # Process extracted markdown files to add title to frontmatter and remove it from content
 echo "Processing markdown titles..."
 find "$ROOT_DIR/content/docs" -type f -name "*.md" | while read -r file; do

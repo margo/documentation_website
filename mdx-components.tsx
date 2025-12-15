@@ -1,5 +1,6 @@
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import { Mermaid } from '@/components/mdx/mermaid';
+import { SwaggerUI } from '@/components/mdx/swagger-ui';
 import type { MDXComponents } from 'mdx/types';
 import type { ComponentProps } from 'react';
 
@@ -21,6 +22,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     ...defaultMdxComponents,
     img: Img,
     Mermaid, // [!code ++]
+    SwaggerUI,
     ...components,
   };
 }
