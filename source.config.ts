@@ -4,6 +4,7 @@ import {
   frontmatterSchema,
   metaSchema,
 } from 'fumadocs-mdx/config';
+import { remarkMdxMermaid } from 'fumadocs-core/mdx-plugins';
 import { visit } from 'unist-util-visit';
 
 const remarkHttpsAsText = () => (tree: unknown) =>
@@ -25,6 +26,6 @@ export const docs = defineDocs({
 export default defineConfig({
   mdxOptions: {
     remarkImageOptions: false,
-    remarkPlugins: [remarkHttpsAsText],
+    remarkPlugins: [remarkHttpsAsText, remarkMdxMermaid],
   },
 });

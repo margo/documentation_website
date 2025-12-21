@@ -10,7 +10,7 @@ export function Mermaid({ chart }: { chart: string }) {
     setMounted(true);
   }, []);
 
-  if (!mounted) return;
+  if (!mounted) return null;
   return <MermaidContent chart={chart} />;
 }
 
@@ -58,6 +58,7 @@ function MermaidContent({ chart }: { chart: string }) {
     />
   );
 }
+
 
 
 
