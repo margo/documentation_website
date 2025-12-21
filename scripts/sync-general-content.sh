@@ -75,7 +75,17 @@ cd "$ROOT_DIR"
 
 mkdir -p "$ROOT_DIR/content/docs/specification"
 rsync -a --delete --exclude ".git" "$SPEC_CACHE_DIR/system-design/specification/" "$ROOT_DIR/content/docs/specification/"
-# echo '{"title": "API Reference"}' > "$ROOT_DIR/content/docs/specification/meta.json"
+cat > "$ROOT_DIR/content/docs/specification/meta.json" <<EOF
+{
+  "title": "Specification",
+  "pages": [
+    "margo-management-interface",
+    "applications",
+    "margo-devices",
+    "observability"
+  ]
+}
+EOF
 
 # Move figures folders from repos to public/figures
 mkdir -p "$ROOT_DIR/public/figures"
