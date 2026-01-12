@@ -57,7 +57,7 @@ export default function HomePage() {
             </div>
             <div className="mt-8 rounded-lg bg-amber-500/10 border border-amber-500/20 px-4 py-3 text-center">
               <p className="text-xs text-amber-700 dark:text-amber-400">
-                ⚠️ Pre-draft stage: No products should be produced based on this version
+                ⚠️ Pre-draft stage: The APIs are incomplete and subject to change at this point. However, implementing PR1 would be very useful for building prototypes. It provides a useful way to get a head start and to ensure that the spec has the appropriate scope. GA1 will include stable APIs and conformance tools. 
               </p>
             </div>
           </div>
