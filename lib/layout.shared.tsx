@@ -22,6 +22,7 @@ export function baseOptions(): BaseLayoutProps {
 
         </span>
       ),
+      url: "https://margo.org",
     },
     // Main navigation links matching Margo website structure
     links: [],

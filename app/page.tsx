@@ -13,9 +13,19 @@ import { SiGithub, SiYoutube } from "@icons-pack/react-simple-icons";
 export default function HomePage() {
   return (
     <main className="flex flex-1 flex-col">
-      <section className="relative overflow-hidden border-b border-fd-border bg-gradient-to-b from-fd-background to-fd-muted/30">
+      <section className="relative overflow-hidden border-b border-fd-border dark">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover z-10"
+        >
+          <source src="/assets/margo-bg-vid.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/50 z-20" />
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
-        <div className="relative mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
+        <div className="relative mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8 z-30">
           <div className="mx-auto max-w-3xl text-center">
             <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-fd-primary/20 bg-fd-primary/5 px-4 py-1.5 text-sm font-medium text-fd-primary">
               <span className="relative flex h-2 w-2">
