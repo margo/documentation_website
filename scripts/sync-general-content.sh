@@ -125,7 +125,11 @@ legacy_swagger_target="../margo-management-interface/management-interface-swagge
 current_swagger_target="../margo-management-interface/workload-management-api-1.0.0"
 find "$ROOT_DIR/content/docs" -type f \( -name "*.md" -o -name "*.mdx" \) -print0 | while IFS= read -r -d '' doc; do
   if grep -q "$legacy_swagger_target" "$doc"; then
-    perl -0pi -e 's/\Q'"$legacy_swagger_target"'\E/'"$current_swagger_target"'/g' "$doc"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      sed -i '' "s|$legacy_swagger_target|$current_swagger_target|g" "$doc"
+    else
+      sed -i "s|$legacy_swagger_target|$current_swagger_target|g" "$doc"
+    fi
   fi
 done
 
