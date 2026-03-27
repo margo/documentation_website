@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "build:local-content": "GENERAL_WEBSITE_CONTENT_DIR=../general_website_content SPECIFICATION_DIR=../specification npm run build",
     "prebuild": "npm run sync:docs",
     "dev": "next dev --turbo",
+    "dev:local-content": "GENERAL_WEBSITE_CONTENT_DIR=../general_website_content SPECIFICATION_DIR=../specification npm run dev",
     "predev": "npm run sync:docs",
     "start": "next start",
     "postinstall": "fumadocs-mdx",

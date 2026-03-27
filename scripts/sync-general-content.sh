@@ -8,15 +8,40 @@ SPEC_BRANCH="pre-draft"
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 CACHE_DIR="$ROOT_DIR/.cache/general_website_content"
 SPEC_CACHE_DIR="$ROOT_DIR/.cache/specification"
+GENERAL_CONTENT_DIR="${GENERAL_WEBSITE_CONTENT_DIR:-}"
+LOCAL_SPEC_DIR="${SPECIFICATION_DIR:-}"
 
-rm -rf "$CACHE_DIR"
-git clone --depth 1 --branch "$REPO_BRANCH" "$REPO_URL" "$CACHE_DIR"
+prepare_repo() {
+  local local_dir="$1"
+  local repo_url="$2"
+  local repo_branch="$3"
+  local cache_dir="$4"
+  local repo_name="$5"
+
+  if [ -n "$local_dir" ]; then
+    if [ ! -d "$local_dir" ]; then
+      echo "Error: $repo_name directory not found: $local_dir" >&2
+      exit 1
+    fi
+
+    local resolved_dir
+    resolved_dir="$(cd "$local_dir" && pwd)"
+    echo "Using local $repo_name repository at $resolved_dir" >&2
+    printf '%s\n' "$resolved_dir"
+    return
+  fi
+
+  rm -rf "$cache_dir"
+  git clone --depth 1 --branch "$repo_branch" "$repo_url" "$cache_dir" >&2
+  printf '%s\n' "$cache_dir"
+}
+
+CACHE_DIR="$(prepare_repo "$GENERAL_CONTENT_DIR" "$REPO_URL" "$REPO_BRANCH" "$CACHE_DIR" "general_website_content")"
 
 mkdir -p "$ROOT_DIR/content/docs"
 rsync -a --delete --exclude ".git" "$CACHE_DIR/system-design/" "$ROOT_DIR/content/docs/"
 
-rm -rf "$SPEC_CACHE_DIR"
-git clone --depth 1 --branch "$SPEC_BRANCH" "$SPEC_REPO_URL" "$SPEC_CACHE_DIR"
+SPEC_CACHE_DIR="$(prepare_repo "$LOCAL_SPEC_DIR" "$SPEC_REPO_URL" "$SPEC_BRANCH" "$SPEC_CACHE_DIR" "specification")"
 
 # Generate LinkML documentation
 echo "Generating LinkML documentation..."
