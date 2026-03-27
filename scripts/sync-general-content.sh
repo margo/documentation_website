@@ -120,6 +120,15 @@ title: "Management Interface - Swagger UI"
 EOF
 done
 
+echo "Rewriting legacy Swagger UI links..."
+legacy_swagger_target="../margo-management-interface/management-interface-swagger.md"
+current_swagger_target="../margo-management-interface/workload-management-api-1.0.0"
+find "$ROOT_DIR/content/docs" -type f \( -name "*.md" -o -name "*.mdx" \) -print0 | while IFS= read -r -d '' doc; do
+  if grep -q "$legacy_swagger_target" "$doc"; then
+    perl -0pi -e 's/\Q'"$legacy_swagger_target"'\E/'"$current_swagger_target"'/g' "$doc"
+  fi
+done
+
 echo "Copying OpenAPI specs to public..."
 find "$ROOT_DIR/content/docs" -type f \( -name "*.yaml" -o -name "*.yml" \) -print0 | while IFS= read -r -d '' yaml; do
   rel="${yaml#"$ROOT_DIR/content/docs/"}"
