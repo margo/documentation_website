@@ -13,25 +13,25 @@ This repository contains the Next.js site that serves [docs.margo.org](https://d
 
 ## Where the website code lives
 
-- [package.json](/Users/osama/Desktop/Others/margo/margo-docs/package.json)
+- [package.json](package.json)
   Top-level scripts for sync, development, and production build.
-- [scripts/sync-general-content.sh](/Users/osama/Desktop/Others/margo/margo-docs/scripts/sync-general-content.sh)
+- [scripts/sync-general-content.sh](scripts/sync-general-content.sh)
   The content assembly pipeline. This is the key script that pulls content from the other repos and prepares it for the site.
-- [app/layout.tsx](/Users/osama/Desktop/Others/margo/margo-docs/app/layout.tsx)
+- [app/layout.tsx](app/layout.tsx)
   Global layout, metadata, and sidebar tree composition.
-- [app/[...slug]/page.tsx](/Users/osama/Desktop/Others/margo/margo-docs/app/[...slug]/page.tsx)
+- [app/[...slug]/page.tsx](app/%5B...slug%5D/page.tsx)
   Catch-all documentation page renderer.
-- [lib/source.ts](/Users/osama/Desktop/Others/margo/margo-docs/lib/source.ts)
+- [lib/source.ts](lib/source.ts)
   Fumadocs content loader used to resolve pages and routes.
-- [source.config.ts](/Users/osama/Desktop/Others/margo/margo-docs/source.config.ts)
+- [source.config.ts](source.config.ts)
   MDX collection and remark plugin configuration.
-- [mdx-components.tsx](/Users/osama/Desktop/Others/margo/margo-docs/mdx-components.tsx)
+- [mdx-components.tsx](mdx-components.tsx)
   Custom MDX components available in documentation pages.
-- [components/mdx/swagger-ui.tsx](/Users/osama/Desktop/Others/margo/margo-docs/components/mdx/swagger-ui.tsx)
+- [components/mdx/swagger-ui.tsx](components/mdx/swagger-ui.tsx)
   Swagger UI wrapper used by generated OpenAPI pages.
-- [next.config.mjs](/Users/osama/Desktop/Others/margo/margo-docs/next.config.mjs)
+- [next.config.mjs](next.config.mjs)
   Next.js configuration, including redirects for legacy documentation routes.
-- [netlify.toml](/Users/osama/Desktop/Others/margo/margo-docs/netlify.toml)
+- [netlify.toml](netlify.toml)
   Netlify build configuration for the production site.
 
 ## How the website is built
@@ -43,7 +43,7 @@ The website build is a two-stage process:
 
 ### Stage 1: Sync and prepare content
 
-`npm run sync:docs` runs [scripts/sync-general-content.sh](/Users/osama/Desktop/Others/margo/margo-docs/scripts/sync-general-content.sh).
+`npm run sync:docs` runs [scripts/sync-general-content.sh](scripts/sync-general-content.sh).
 
 That script does the following:
 
@@ -73,13 +73,13 @@ The generated site content in `content/docs/` is intentionally ignored by Git. I
 2. `build`
    This runs `next build`.
 
-The site is rendered by the catch-all route in [app/[...slug]/page.tsx](/Users/osama/Desktop/Others/margo/margo-docs/app/[...slug]/page.tsx), which loads pages through the Fumadocs source defined in [lib/source.ts](/Users/osama/Desktop/Others/margo/margo-docs/lib/source.ts).
+The site is rendered by the catch-all route in [app/[...slug]/page.tsx](app/%5B...slug%5D/page.tsx), which loads pages through the Fumadocs source defined in [lib/source.ts](lib/source.ts).
 
 ## GitHub actions and deployment behavior
 
 ### In `margo-docs`
 
-There are currently no checked-in GitHub Actions in this repository. Production deployment is configured through Netlify using [netlify.toml](/Users/osama/Desktop/Others/margo/margo-docs/netlify.toml).
+There are currently no checked-in GitHub Actions in this repository. Production deployment is configured through Netlify using [netlify.toml](netlify.toml).
 
 Netlify runs:
 
@@ -91,21 +91,23 @@ That means every Netlify deployment executes the sync script first, then builds 
 
 ### In `general_website_content`
 
-- [general_website_content/.github/workflows/netlify-build.yml](/Users/osama/Desktop/Others/margo/general_website_content/.github/workflows/netlify-build.yml)
+- [general_website_content/.github/workflows/netlify-build.yml](https://github.com/margo/general_website_content/blob/pre-draft/.github/workflows/netlify-build.yml)
   Triggers a Netlify build hook on pushes to `pre-draft`.
-- [general_website_content/.github/workflows/pr-checks.yml](/Users/osama/Desktop/Others/margo/general_website_content/.github/workflows/pr-checks.yml)
+- [general_website_content/.github/workflows/pr-checks.yml](https://github.com/margo/general_website_content/blob/pre-draft/.github/workflows/pr-checks.yml)
   Runs sign-off checks on pull requests.
 
 Important detail: the `netlify-build.yml` workflow lives in `general_website_content`, but it triggers a build of the website hosted from `margo-docs`. During that Netlify build, `margo-docs` pulls the latest `pre-draft` content from both `general_website_content` and `specification`.
 
 ### In `specification`
 
-- [specification/.github/workflows/pages.yml](/Users/osama/Desktop/Others/margo/specification/.github/workflows/pages.yml)
+- [specification/.github/workflows/netlify-build.yml](https://github.com/margo/specification/blob/pre-draft/.github/workflows/netlify-build.yml)
+  Triggers a Netlify build hook on pushes to `pre-draft`.
+- [specification/.github/workflows/pages.yml](https://github.com/margo/specification/blob/pre-draft/.github/workflows/pages.yml)
   Builds and deploys the standalone MkDocs site for the specification repo and runs validation/document-generation jobs.
-- [specification/.github/workflows/pr-checks.yml](/Users/osama/Desktop/Others/margo/specification/.github/workflows/pr-checks.yml)
+- [specification/.github/workflows/pr-checks.yml](https://github.com/margo/specification/blob/pre-draft/.github/workflows/pr-checks.yml)
   Runs sign-off checks on pull requests.
 
-Important detail: the `specification` repo’s `pages.yml` workflow does not deploy `docs.margo.org`. It builds the standalone MkDocs version of the specification. The website at `docs.margo.org` only picks up spec changes when a `margo-docs` Netlify build runs.
+Important detail: the `specification` repo’s `pages.yml` workflow does not deploy `docs.margo.org`. It builds the standalone MkDocs version of the specification. The `netlify-build.yml` workflow triggers the `margo-docs` Netlify build so `docs.margo.org` picks up specification-only changes merged to `pre-draft`.
 
 ## How to render the full website locally
 
@@ -131,7 +133,7 @@ Alternative to `poetry`:
 - `linkml`
 - `mkdocs`
 
-The Python dependencies used by the sync pipeline are listed in [requirements.txt](/Users/osama/Desktop/Others/margo/margo-docs/requirements.txt).
+The Python dependencies used by the sync pipeline are listed in [requirements.txt](requirements.txt).
 
 ### Install website dependencies
 
@@ -146,7 +148,6 @@ npm install
 This is the simplest flow and matches what Netlify does by default.
 
 ```bash
-cd /Users/osama/Desktop/Others/margo/margo-docs
 npm run dev
 ```
 
@@ -172,30 +173,30 @@ If they are set, the website uses those local directories instead of cloning fro
 
 If your local layout matches this workspace:
 
-- `/Users/osama/Desktop/Others/margo/margo-docs`
-- `/Users/osama/Desktop/Others/margo/general_website_content`
-- `/Users/osama/Desktop/Others/margo/specification`
+- `/path/to/workspace/margo-docs`
+- `/path/to/workspace/general_website_content`
+- `/path/to/workspace/specification`
 
 run either:
 
 ```bash
-cd /Users/osama/Desktop/Others/margo/margo-docs
+cd /path/to/workspace/margo-docs
 npm run dev:local-content
 ```
 
 or explicitly:
 
 ```bash
-cd /Users/osama/Desktop/Others/margo/margo-docs
-export GENERAL_WEBSITE_CONTENT_DIR=/Users/osama/Desktop/Others/margo/general_website_content
-export SPECIFICATION_DIR=/Users/osama/Desktop/Others/margo/specification
+cd /path/to/workspace/margo-docs
+export GENERAL_WEBSITE_CONTENT_DIR=/path/to/workspace/general_website_content
+export SPECIFICATION_DIR=/path/to/workspace/specification
 npm run dev
 ```
 
 For a production-style local build with local source repos:
 
 ```bash
-cd /Users/osama/Desktop/Others/margo/margo-docs
+cd /path/to/workspace/margo-docs
 npm run build:local-content
 ```
 
@@ -214,7 +215,7 @@ That is acceptable for many editorial changes, but not ideal if your change depe
 For content contributors and SUP owners, the safest check is:
 
 ```bash
-cd /Users/osama/Desktop/Others/margo/margo-docs
+cd /path/to/workspace/margo-docs
 npm run build:local-content
 ```
 
