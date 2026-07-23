@@ -125,12 +125,14 @@ fi
 rm -rf "$ROOT_DIR/content/docs/figures"
 rm -rf "$ROOT_DIR/content/docs/specification/figures"
 
-# Fix invalid 'https' language in code blocks
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i '' 's/<br>//g' {} +
-else
-  find "$ROOT_DIR/content/docs" -type f -name "*.md" -exec sed -i 's/<br>//g' {} +
-fi
+# Self-close <br> inside fenced code so mermaid keeps its line breaks; strip it
+# elsewhere. A bare <br> in a heading crashes fumadocs' rehypeToc.
+find "$ROOT_DIR/content/docs" -type f -name "*.md" -print0 | while IFS= read -r -d '' f; do
+  awk '
+    /^[[:space:]]*```/ { fence = !fence }
+    { if (fence) gsub(/<br>/, "<br/>"); else gsub(/<br>/, ""); print }
+  ' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+done
 
 echo "Generating SwaggerUI MDX files..."
 rm -f "$ROOT_DIR/content/docs/specification/margo-management-interface/management-interface-swagger.md"
