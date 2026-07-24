@@ -104,6 +104,7 @@ cat > "$ROOT_DIR/content/docs/specification/meta.json" <<EOF
 {
   "title": "Specification",
   "pages": [
+    "identity",
     "margo-management-interface",
     "applications",
     "margo-devices",
