@@ -136,7 +136,7 @@ done
 
 echo "Generating SwaggerUI MDX files..."
 rm -f "$ROOT_DIR/content/docs/specification/margo-management-interface/management-interface-swagger.md"
-find "$ROOT_DIR/content/docs" -type f \( -name "workload-management-api-1.0.0.yaml" -o -name "workload-management-api-1.0.0.yml" \) -print0 | while IFS= read -r -d '' yaml; do
+find "$ROOT_DIR/content/docs" -type f \( -name "workload-management-api-*.yaml" -o -name "workload-management-api-*.yml" \) -print0 | while IFS= read -r -d '' yaml; do
   mdx="${yaml%.*}.mdx"
   base="$(basename "$yaml")"
   cat > "$mdx" <<EOF
@@ -149,16 +149,23 @@ done
 
 echo "Rewriting legacy Swagger UI links..."
 legacy_swagger_target="../margo-management-interface/management-interface-swagger.md"
-current_swagger_target="../margo-management-interface/workload-management-api-1.0.0"
-find "$ROOT_DIR/content/docs" -type f \( -name "*.md" -o -name "*.mdx" \) -print0 | while IFS= read -r -d '' doc; do
-  if grep -q "$legacy_swagger_target" "$doc"; then
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-      sed -i '' "s|$legacy_swagger_target|$current_swagger_target|g" "$doc"
-    else
-      sed -i "s|$legacy_swagger_target|$current_swagger_target|g" "$doc"
+# Derive the current Swagger page slug from the generated management API file name
+# so versioned/tagged names (e.g. workload-management-api-1.0.0-rc.2) resolve correctly.
+# Only rewrite when a management API file exists; otherwise there is no valid target.
+swagger_yaml="$(find "$ROOT_DIR/content/docs" -type f \( -name "workload-management-api-*.yaml" -o -name "workload-management-api-*.yml" \) | head -n 1)"
+if [ -n "$swagger_yaml" ]; then
+  swagger_slug="$(basename "${swagger_yaml%.*}")"
+  current_swagger_target="../margo-management-interface/$swagger_slug"
+  find "$ROOT_DIR/content/docs" -type f \( -name "*.md" -o -name "*.mdx" \) -print0 | while IFS= read -r -d '' doc; do
+    if grep -q "$legacy_swagger_target" "$doc"; then
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' "s|$legacy_swagger_target|$current_swagger_target|g" "$doc"
+      else
+        sed -i "s|$legacy_swagger_target|$current_swagger_target|g" "$doc"
+      fi
     fi
-  fi
-done
+  done
+fi
 
 echo "Copying OpenAPI specs to public..."
 find "$ROOT_DIR/content/docs" -type f \( -name "*.yaml" -o -name "*.yml" \) -print0 | while IFS= read -r -d '' yaml; do
