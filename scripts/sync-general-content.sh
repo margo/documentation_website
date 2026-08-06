@@ -172,7 +172,7 @@ while read -r legacy prefix; do
   yaml="$(find "$ROOT_DIR/content/docs" -type f \( -name "$prefix-*.yaml" -o -name "$prefix-*.yml" \) | head -n 1)"
   [ -n "$yaml" ] || continue
   current="$(basename "${yaml%.*}")"
-  find "$ROOT_DIR/content/docs" -type f \( -name "*.md" -o -name "*.mdx" \) -print0 | while IFS= read -r -d '' doc; do
+  find "$ROOT_DIR/content/docs" -type f \( -name "*.md" -o -name "*.mdx" -o -name "meta.json" \) -print0 | while IFS= read -r -d '' doc; do
     grep -q "$legacy" "$doc" || continue
     if [[ "$OSTYPE" == "darwin"* ]]; then
       sed -i '' "s|${legacy}\.md|${current}|g; s|${legacy}|${current}|g" "$doc"
