@@ -108,6 +108,7 @@ cat > "$ROOT_DIR/content/docs/specification/meta.json" <<EOF
     "applications",
     "margo-devices",
     "observability",
+    "extensibility",
     "specification-version-management"
   ]
 }
