@@ -5,6 +5,7 @@ import {
   Code2,
   FileText,
   ExternalLink,
+  Map,
   Rocket,
   Users,
   Shield,
@@ -62,6 +63,16 @@ export default function HomePage() {
               >
                 <FileText className="h-5 w-5" />
                 Read the specification
+                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Link>
+              <Link
+                href="https://margo.github.io/project-dashboard/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-fd-primary bg-fd-primary px-6 py-3.5 text-base font-semibold text-fd-primary-foreground transition-all hover:bg-fd-primary/90 hover:shadow-lg sm:w-auto"
+              >
+                <Map className="h-5 w-5" />
+                Roadmap Dashboard
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
