@@ -104,12 +104,14 @@ cat > "$ROOT_DIR/content/docs/specification/meta.json" <<EOF
 {
   "title": "Specification",
   "pages": [
+    "identity",
     "margo-management-interface",
     "applications",
     "margo-devices",
     "observability",
     "extensibility",
-    "specification-version-management"
+    "specification-version-management",
+    "problem-types"
   ]
 }
 EOF
@@ -137,37 +139,53 @@ find "$ROOT_DIR/content/docs" -type f -name "*.md" -print0 | while IFS= read -r 
 done
 
 echo "Generating SwaggerUI MDX files..."
-rm -f "$ROOT_DIR/content/docs/specification/margo-management-interface/management-interface-swagger.md"
-find "$ROOT_DIR/content/docs" -type f \( -name "workload-management-api-*.yaml" -o -name "workload-management-api-*.yml" \) -print0 | while IFS= read -r -d '' yaml; do
+find "$ROOT_DIR/content/docs" -type f -name "*-swagger.md" -delete
+find "$ROOT_DIR/content/docs" -type f \( -name "*.yaml" -o -name "*.yml" \) -print0 | while IFS= read -r -d '' yaml; do
+  grep -qiE '^openapi:' "$yaml" || continue
   mdx="${yaml%.*}.mdx"
   base="$(basename "$yaml")"
+  # Page title from the document's info.title (falls back to the file name).
+  # Strip a surrounding pair of quotes from the scalar; the frontmatter re-quotes it.
+  title="$(awk '
+    /^info:/ { in_info = 1; next }
+    in_info && /^[^[:space:]]/ { in_info = 0 }
+    in_info && /^[[:space:]]+title:[[:space:]]*/ {
+      sub(/^[[:space:]]+title:[[:space:]]*/, "")
+      sub(/\r$/, ""); sub(/[[:space:]]+$/, "")
+      if ($0 ~ /^".*"$/ || $0 ~ /^\047.*\047$/) $0 = substr($0, 2, length($0) - 2)
+      print; exit
+    }' "$yaml")"
+  title="${title:-${base%.*}} - Swagger UI"
+  title="${title//\"/\\\"}"   # escape double quotes for the YAML frontmatter string
   cat > "$mdx" <<EOF
 ---
-title: "Management Interface - Swagger UI"
+title: "$title"
 ---
 <SwaggerUI url="./$base" />
 EOF
 done
 
 echo "Rewriting legacy Swagger UI links..."
-legacy_swagger_target="../margo-management-interface/management-interface-swagger.md"
-# Derive the current Swagger page slug from the generated management API file name
-# so versioned/tagged names (e.g. workload-management-api-1.0.0-rc.2) resolve correctly.
-# Only rewrite when a management API file exists; otherwise there is no valid target.
-swagger_yaml="$(find "$ROOT_DIR/content/docs" -type f \( -name "workload-management-api-*.yaml" -o -name "workload-management-api-*.yml" \) | head -n 1)"
-if [ -n "$swagger_yaml" ]; then
-  swagger_slug="$(basename "${swagger_yaml%.*}")"
-  current_swagger_target="../margo-management-interface/$swagger_slug"
-  find "$ROOT_DIR/content/docs" -type f \( -name "*.md" -o -name "*.mdx" \) -print0 | while IFS= read -r -d '' doc; do
-    if grep -q "$legacy_swagger_target" "$doc"; then
-      if [[ "$OSTYPE" == "darwin"* ]]; then
-        sed -i '' "s|$legacy_swagger_target|$current_swagger_target|g" "$doc"
-      else
-        sed -i "s|$legacy_swagger_target|$current_swagger_target|g" "$doc"
-      fi
+# Derive each Swagger page slug from the generated OpenAPI file name so that
+# versioned/tagged names (e.g. workload-management-api-1.0.0-rc.2) resolve correctly.
+# Only rewrite a legacy target when its OpenAPI file exists; otherwise there is no valid target.
+while read -r legacy prefix; do
+  [ -n "$legacy" ] || continue
+  yaml="$(find "$ROOT_DIR/content/docs" -type f \( -name "$prefix-*.yaml" -o -name "$prefix-*.yml" \) | head -n 1)"
+  [ -n "$yaml" ] || continue
+  current="$(basename "${yaml%.*}")"
+  find "$ROOT_DIR/content/docs" -type f \( -name "*.md" -o -name "*.mdx" -o -name "meta.json" \) -print0 | while IFS= read -r -d '' doc; do
+    grep -q "$legacy" "$doc" || continue
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      sed -i '' "s|${legacy}\.md|${current}|g; s|${legacy}|${current}|g" "$doc"
+    else
+      sed -i "s|${legacy}\.md|${current}|g; s|${legacy}|${current}|g" "$doc"
     fi
   done
-fi
+done <<'PAIRS'
+management-interface-swagger workload-management-api
+trust-bundle-api-swagger trust-bundle-api
+PAIRS
 
 echo "Copying OpenAPI specs to public..."
 find "$ROOT_DIR/content/docs" -type f \( -name "*.yaml" -o -name "*.yml" \) -print0 | while IFS= read -r -d '' yaml; do

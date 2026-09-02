@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import { baseOptions } from "@/lib/layout.shared";
 import { source } from "@/lib/source";
-import { ExternalLink, Home } from "lucide-react";
+import { ExternalLink, Home, Video } from "lucide-react";
 import { SiYoutube, SiDiscourse } from "@icons-pack/react-simple-icons";
 import type { Metadata } from "next";
 
@@ -114,6 +114,13 @@ const extendedTree = {
       url: "https://discourse.margo.org/invites/78Dyn2wDfP",
       external: true,
       icon: <SiDiscourse className="w-4 h-4" />,
+    },
+    {
+      type: "page" as const,
+      name: "Progress Updates (Margo community only)",
+      url: "https://lfmargo.sharepoint.com/:v:/r/Shared%20Documents/Town%20Hall%20Recordings/Town%20Hall%20Margo%20Community%20Meeting-20260729_135711UTC-Meeting%20Recording.mp4?d=wdfb1a2f100a54382a7ccc69cc3120853&csf=1&web=1&e=f21yGo",
+      external: true,
+      icon: <Video className="w-4 h-4" />,
     },
   ],
 };
