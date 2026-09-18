@@ -9,6 +9,7 @@ import {
   Rocket,
   Users,
   Shield,
+  Sparkles,
 } from "lucide-react";
 import { SiGithub, SiYoutube } from "@icons-pack/react-simple-icons";
 export default function HomePage() {
@@ -81,6 +82,30 @@ export default function HomePage() {
                 ⚠️ Pre-draft stage: The APIs are incomplete and subject to change at this point. However, implementing PR1 would be very useful for building prototypes. It provides a useful way to get a head start and to ensure that the spec has the appropriate scope. GA1 will include stable APIs and conformance tools. 
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-fd-border py-16">
+        <div className="mx-auto max-w-5xl px-6 lg:px-8">
+          <div className="rounded-2xl border border-fd-primary/20 bg-fd-primary/5 p-8 sm:p-10">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-fd-primary/10 px-4 py-1.5 text-sm font-semibold text-fd-primary">
+              <Sparkles className="h-4 w-4" />
+              Preview Release 3 now available
+            </div>
+            <p className="leading-relaxed text-fd-muted-foreground">
+              A key highlight of PR3 is the introduction of Margo’s Identity
+              and Authorisation Framework, bringing a more structured
+              approach to how applications, users and capabilities can be
+              securely identified and authorised across the industrial edge.
+              Alongside this, PR3 introduces several key enhancements,
+              including OCI-based Compose, RFC 9457 integration, version
+              management, the evolution from roles to capabilities, and
+              further specification extensions. Together, these updates
+              continue to strengthen the Margo specification and broaden its
+              practical applicability as an open approach to interoperable
+              industrial edge application management.
+            </p>
           </div>
         </div>
       </section>
